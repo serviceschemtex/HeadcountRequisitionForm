@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headcount Requisition — International Chemtex Corporation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f3; color: #1a1a18; font-size: 15px; line-height: 1.6; }
+  .page { max-width: 780px; margin: 2.5rem auto; background: #fff; border: 1px solid #e0dfd8; border-radius: 12px; padding: 2.5rem 3rem 3rem; }
+  .form-header { display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e0dfd8; margin-bottom: 2rem; }
+  .form-header img { height: 60px; width: auto; flex-shrink: 0; }
+  .form-header-text h1 { font-size: 20px; font-weight: 600; color: #1a1a18; line-height: 1.2; }
+  .form-header-text .sub1 { font-size: 14px; color: #5f5e5a; margin-top: 2px; }
+  .form-header-text .sub2 { font-size: 12px; color: #888780; margin-top: 6px; }
+  .required-note { color: #a32d2d; }
+  .section { margin-bottom: 2.5rem; }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #888780; padding-bottom: 8px; border-bottom: 1px solid #e0dfd8; margin-bottom: 1.25rem; }
+  .field { margin-bottom: 1.25rem; }
+  .field label { display: block; font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 5px; }
+  .field .hint { font-size: 12px; color: #888780; margin-bottom: 5px; }
+  .field input[type=text],
+  .field input[type=email],
+  .field input[type=date],
+  .field select,
+  .field textarea {
+    width: 100%; padding: 8px 10px; font-size: 14px;
+    border: 1px solid #c8c7c0; border-radius: 7px;
+    background: #fff; color: #1a1a18;
+    font-family: inherit; transition: border-color .15s;
+  }
+  .field input[type=text]:focus,
+  .field input[type=email]:focus,
+  .field input[type=date]:focus,
+  .field select:focus,
+  .field textarea:focus { outline: none; border-color: #378add; box-shadow: 0 0 0 3px rgba(55,138,221,.12); }
+  .field textarea { min-height: 82px; resize: vertical; line-height: 1.5; }
+  .field input[type=file] { font-size: 13px; color: #5f5e5a; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .radio-group, .checkbox-item { display: flex; flex-direction: column; gap: 6px; }
+  .radio-group label, .checkbox-item label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 400; cursor: pointer; }
+  .checkbox-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+  .conditional { display: none; margin-top: .75rem; padding: 12px 14px; background: #f5f5f3; border-radius: 7px; border-left: 2px solid #c8c7c0; }
+  .conditional.visible { display: block; }
+  .divider { height: 1px; background: #e0dfd8; margin: 1.5rem 0; }
+  .req { color: #a32d2d; }
+  .submit-row { display: flex; justify-content: flex-end; gap: 10px; padding-top: 1.25rem; border-top: 1px solid #e0dfd8; margin-top: 1rem; }
+  .btn { padding: 9px 22px; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity .15s, background .15s; }
+  .btn-outline { background: transparent; border: 1px solid #c8c7c0; color: #1a1a18; }
+  .btn-outline:hover { background: #f5f5f3; }
+  .btn-primary { background: #185fa5; border: 1px solid #185fa5; color: #fff; }
+  .btn-primary:hover { opacity: .88; }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-danger { color: #a32d2d; border-color: #e3b8b8; }
+  .btn-danger:hover { background: #fbeeee; }
+  .btn-deny { background: #a32d2d; border: 1px solid #a32d2d; color: #fff; }
+  .btn-deny:hover { opacity: .88; }
+  .btn-success { background: #2c7a4b; border: 1px solid #2c7a4b; color: #fff; }
+  .btn-success:hover { opacity: .88; }
+
+  /* ── STATUS BAR ── */
+  .status-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: #f5f5f3; border: 1px solid #e0dfd8; border-radius: 9px; padding: 12px 16px; margin-bottom: 1.5rem; }
+  .status-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .status-pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: .01em; }
+  .status-draft { background: #eceae3; color: #6b6a63; }
+  .status-pending { background: #fdf0d5; color: #9a6a12; }
+  .status-sentback { background: #fbeeee; color: #a32d2d; }
+  .status-denied { background: #f3d3d3; color: #7a1f1f; }
+  .status-approved { background: #e3f1e8; color: #1f6b3f; }
+  .req-id { font-size: 12px; color: #5f5e5a; }
+  .status-right { display: flex; align-items: center; gap: 8px; }
+  .status-right input[type=text] { padding: 6px 9px; font-size: 13px; border: 1px solid #c8c7c0; border-radius: 7px; font-family: inherit; }
+
+  /* ── ACTIVITY LOG ── */
+  .activity-log { background: #fff; border: 1px solid #e0dfd8; border-radius: 9px; padding: 12px 16px; margin-bottom: 1.5rem; }
+  .activity-log-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #888780; margin-bottom: 8px; }
+  .activity-log ul { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
+  .activity-log li { font-size: 13px; color: #1a1a18; }
+  .activity-ts { color: #888780; font-size: 12px; margin-right: 4px; }
+
+  /* ── APPROVERS ── */
+  .approver-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e0dfd8; }
+  .approver-row:last-child { border-bottom: none; }
+  .approver-order { width: 24px; height: 24px; border-radius: 50%; background: #185fa5; color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .approver-fields { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .approver-fields input { padding: 7px 9px; font-size: 13px; border: 1px solid #c8c7c0; border-radius: 7px; font-family: inherit; width: 100%; }
+  .approver-status { flex-shrink: 0; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 14px; white-space: nowrap; }
+  .approver-remove { flex-shrink: 0; background: none; border: none; color: #a3a29a; font-size: 15px; cursor: pointer; padding: 4px 6px; border-radius: 5px; }
+  .approver-remove:hover { background: #fbeeee; color: #a32d2d; }
+  .approver-panel { background: #fbfaf7; border: 1px solid #e0dfd8; border-radius: 10px; padding: 1.5rem; margin-bottom: 2.5rem; }
+  .approver-panel .section-title { border-bottom-color: #e0dfd8; }
+  .approver-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1rem; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 22px; right: 22px; background: #1a1a18; color: #fff; font-size: 13px; padding: 10px 18px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.18); z-index: 999; display: none; }
+  @media print {
+    body { background: #fff; }
+    .page { border: none; box-shadow: none; margin: 0; padding: 1.5rem; }
+    .submit-row { display: none; }
+  }
+  @media (max-width: 600px) {
+    .page { padding: 1.25rem; margin: 0; border-radius: 0; }
+    .two-col { grid-template-columns: 1fr; }
+    .checkbox-wrap { grid-template-columns: 1fr; }
+    .approver-fields { grid-template-columns: 1fr; }
+    .approver-row { flex-wrap: wrap; }
+    .status-bar { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="form-header">
+    <img src="data:image/jpeg;base64,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lHTsMk00rw1jGjmSSqhbVdo+V7bsnGCbPKOq+4m/35GrDUgH+9mPuIhw0afITqdAMhcZ896SmRGmtrJrDgdHNxklHB5HunAf3sunJoO6zw8dTY7ZvgeN7P7C20Y9RCJp0M9Q/vpqhw9093b5ByHYArMVHG4y4y7u4rtyyOEeEfqajsM2KWHZvSsrp+rueRSM0lrXN72LUcWQg+xHZvcz5BwErIiqznKb2pMtQhGC0iERFwdBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAERaTtBzwWKrjx7Hrc+/5ZVs3qa2wu0ETf8AFndyjjHhOhPIeEdRi5PRHkpKK1Z7dpee49s/sDrrfqrdLtW01LHxmqX+9Y3t7NTyGvEqH7Xs+y/bLfqfLNqIms+Owu37bj0by15b4ZDwLde0nvj2bg0W+4LsvMF+9Wme17Mjy1+hZI5v/haAcwynYeWnvjx7eBJJkxTKxVcIc+/7fchcHZxny7vuea10FDa7dBbrbSQ0lHTsDIYYWBrGNHYAOS9KIq5OEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBDwGpXzqJo4Gb8rtAToABqXHwADiT5AsTWWuW9ncu+rLf8A/QNdwm/XEeyH5g73nvFwOg9SPGzDXG93rJpH27Cnx01ICWVF+mj34mdhbTMPCZ/55+9t8LiC1ZbDsTs+K0ksVtikkqKl/WVlbUP6ypq5PfyyHi4+TkOwALORsZHG2ONjWMaAGtaNAAOQAX9Xrlw0XI8UeOr5hERcnQREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREB8o4GNkMrtXykabzuYHgHgC+qIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiID//Z" alt="International Chemtex Corporation logo">
+    <div class="form-header-text">
+      <h1>International Chemtex Corporation</h1>
+      <div class="sub1">Headcount Requisition</div>
+      <div class="sub2">Complete all sections and submit to executive leadership for review. Fields marked <span class="required-note">*</span> are required.</div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <div class="status-left">
+      <span class="status-pill status-draft" id="statusPill">Draft</span>
+      <span class="req-id">Requisition ID: <b id="reqIdDisplay">—</b></span>
+    </div>
+    <div class="status-right">
+      <input type="text" id="loadReqId" placeholder="Paste a requisition ID to open it">
+      <button class="btn btn-outline btn-sm" type="button" onclick="loadRequisition()">Open</button>
+    </div>
+  </div>
+
+  <div class="activity-log" id="activityLog" style="display:none">
+    <div class="activity-log-title">Activity</div>
+    <ul id="activityList"></ul>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-title">Section 1 — Request information</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Requesting manager <span class="req">*</span></label>
+        <input type="text" id="reqManager" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Department / business unit <span class="req">*</span></label>
+        <input type="text" id="reqDept" placeholder="e.g. Engineering, Operations">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Requester email <span class="req">*</span></label>
+        <div class="hint">Used to send status notifications (approved, denied, or sent back for more information).</div>
+        <input type="email" id="reqEmail" placeholder="you@chemtex.com">
+      </div>
+      <div class="field">
+        <label>Date submitted <span class="req">*</span></label>
+        <input type="date" id="reqDate">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Requested job title <span class="req">*</span></label>
+        <input type="text" id="reqTitle" placeholder="e.g. Senior Analyst">
+      </div>
+      <div class="field">
+        <label>Number of positions requested <span class="req">*</span></label>
+        <input type="text" placeholder="e.g. 1">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Reports to <span class="req">*</span></label>
+        <input type="text" placeholder="Direct supervisor name / title">
+      </div>
+      <div class="field">
+        <label>Position type <span class="req">*</span></label>
+        <select id="pos-type" onchange="toggle('pos-type','replacement','is-replacement')">
+          <option value="">Select…</option>
+          <option value="new">New position</option>
+          <option value="replacement">Replacement</option>
+          <option value="temp">Temporary / seasonal</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" style="max-width:50%">
+      <label>Requested start / target hire date</label>
+      <input type="date">
+    </div>
+
+    <div class="conditional" id="is-replacement">
+      <div class="field" style="margin-bottom:0">
+        <label>Who is being replaced and why is the position vacant?</label>
+        <textarea placeholder="Name, role, and reason for vacancy"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-title">Section 2 — Business need and justification</div>
+
+    <div class="field">
+      <label>Why is this position needed? <span class="req">*</span></label>
+      <div class="hint">Briefly describe the business, workload, operational, compliance, safety, or growth need this role addresses.</div>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>What company, department, project, or operational goal does this position support? <span class="req">*</span></label>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>What would be the impact if this position is not approved? <span class="req">*</span></label>
+      <textarea placeholder="Describe risks, delays, costs, customer impacts, or compliance concerns."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>How is this work being handled today? <span class="req">*</span></label>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Are current employees performing this work? <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="curr-emp" value="yes" onchange="showIf('curr-emp','yes','curr-emp-detail')"> Yes</label>
+        <label><input type="radio" name="curr-emp" value="no" onchange="showIf('curr-emp','yes','curr-emp-detail')"> No</label>
+      </div>
+      <div class="conditional" id="curr-emp-detail">
+        <div class="field" style="margin-bottom:0">
+          <label>Who is performing the work and what impact is it having on their workload, priorities, overtime, or service levels?</label>
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>What data supports the need for this position? <span class="req">*</span></label>
+      <div class="hint">Include relevant workload, overtime, production, sales, backlog, turnover, quality, safety, compliance, or service-level data.</div>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Has overtime, temporary labor, contractor support, or redistribution of duties been used to cover this need?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="coverage" value="yes" onchange="showIf('coverage','yes','coverage-detail')"> Yes</label>
+        <label><input type="radio" name="coverage" value="no" onchange="showIf('coverage','yes','coverage-detail')"> No</label>
+      </div>
+      <div class="conditional" id="coverage-detail">
+        <div class="field" style="margin-bottom:0">
+          <label>What has been used, for how long, and is it sustainable?</label>
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>What alternatives were considered before requesting headcount? Select all that apply.</label>
+      <div class="checkbox-wrap">
+        <label class="checkbox-item"><input type="checkbox"> Reassigning work</label>
+        <label class="checkbox-item"><input type="checkbox"> Process improvement</label>
+        <label class="checkbox-item"><input type="checkbox"> Automation</label>
+        <label class="checkbox-item"><input type="checkbox"> Temporary employee</label>
+        <label class="checkbox-item"><input type="checkbox"> Contractor</label>
+        <label class="checkbox-item"><input type="checkbox"> Overtime</label>
+        <label class="checkbox-item"><input type="checkbox"> Part-time support</label>
+        <label class="checkbox-item"><input type="checkbox"> Outsourcing</label>
+        <label class="checkbox-item"><input type="checkbox"> Changing priorities</label>
+        <label class="checkbox-item"><input type="checkbox"> Other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Why are those alternatives not sufficient? <span class="req">*</span></label>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Could the work be reduced, delayed, automated, outsourced, or absorbed by the current team without adding headcount?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="absorb" value="yes"> Yes</label>
+        <label><input type="radio" name="absorb" value="no"> No</label>
+        <label><input type="radio" name="absorb" value="unsure"> Unsure</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Explain your answer above. <span class="req">*</span></label>
+      <textarea></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Is this position included in the approved department budget?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="budgeted" value="yes" onchange="showIf('budgeted','no','budget-detail')"> Yes</label>
+        <label><input type="radio" name="budgeted" value="no" onchange="showIf('budgeted','no','budget-detail')"> No</label>
+        <label><input type="radio" name="budgeted" value="unsure" onchange="showIf('budgeted','no','budget-detail')"> Unsure</label>
+      </div>
+      <div class="conditional" id="budget-detail">
+        <div class="field" style="margin-bottom:0">
+          <label>How would the role be funded, or why should leadership still consider approval?</label>
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Are there expected non-compensation costs (equipment, software, vehicle, travel, training, workspace, PPE, etc.)?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="noncomp" value="yes" onchange="showIf('noncomp','yes','noncomp-detail')"> Yes</label>
+        <label><input type="radio" name="noncomp" value="no" onchange="showIf('noncomp','yes','noncomp-detail')"> No</label>
+        <label><input type="radio" name="noncomp" value="unsure" onchange="showIf('noncomp','yes','noncomp-detail')"> Unsure</label>
+      </div>
+      <div class="conditional" id="noncomp-detail">
+        <div class="field" style="margin-bottom:0">
+          <label>Describe the expected non-compensation costs.</label>
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>What measurable benefit is expected if this position is approved? <span class="req">*</span></label>
+      <textarea placeholder="Key results or outcomes expected within the first 6–12 months."></textarea>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <div class="section-title">Section 3 — Position details</div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Employment type <span class="req">*</span></label>
+        <select>
+          <option value="">Select…</option>
+          <option>Full-time</option>
+          <option>Part-time</option>
+          <option>Temporary</option>
+          <option>Seasonal</option>
+          <option>Intern</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Work location type <span class="req">*</span></label>
+        <select>
+          <option value="">Select…</option>
+          <option>On-site</option>
+          <option>Hybrid</option>
+          <option>Remote</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Work location / address</label>
+        <input type="text" placeholder="Street address">
+      </div>
+      <div class="field">
+        <label>Display address on job posting?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="show-addr" value="yes"> Yes</label>
+          <label><input type="radio" name="show-addr" value="no"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Work schedule</label>
+        <input type="text" placeholder="e.g. Mon–Fri, day shift, 40 hrs/week">
+      </div>
+      <div class="field">
+        <label>Is travel required?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="travel" value="yes" onchange="showIf('travel','yes','travel-detail')"> Yes</label>
+          <label><input type="radio" name="travel" value="no" onchange="showIf('travel','yes','travel-detail')"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="conditional" id="travel-detail">
+      <div class="field" style="margin-bottom:0">
+        <label>Describe the expected travel frequency and purpose.</label>
+        <textarea></textarea>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Position summary <span class="req">*</span></label>
+      <div class="hint">1–2 sentences describing the main purpose of the role.</div>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Essential duties and responsibilities <span class="req">*</span></label>
+      <textarea style="min-height:120px" placeholder="List the primary duties of this position."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Minimum qualifications <span class="req">*</span></label>
+      <div class="hint">Education, experience, certifications, licenses, technical skills, or equipment experience required.</div>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Preferred qualifications</label>
+      <textarea></textarea>
+    </div>
+
+    <div class="field">
+      <label>Will this position supervise employees?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="supervise" value="yes" onchange="showIf('supervise','yes','supervise-detail')"> Yes</label>
+        <label><input type="radio" name="supervise" value="no" onchange="showIf('supervise','yes','supervise-detail')"> No</label>
+      </div>
+      <div class="conditional" id="supervise-detail">
+        <div class="field" style="margin-bottom:0">
+          <label>How many employees and what supervisory responsibilities?</label>
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <div class="section-title">Section 4 — Posting and hiring information</div>
+
+    <div class="field">
+      <label>Is there a current job description on file?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="jd-onfile" value="yes"> Yes</label>
+        <label><input type="radio" name="jd-onfile" value="no"> No</label>
+        <label><input type="radio" name="jd-onfile" value="unsure"> Unsure</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Which benefits should be listed on the job posting? Select all that apply.</label>
+      <div class="checkbox-wrap">
+        <label class="checkbox-item"><input type="checkbox"> Work from home</label>
+        <label class="checkbox-item"><input type="checkbox"> Health insurance</label>
+        <label class="checkbox-item"><input type="checkbox"> Dental insurance</label>
+        <label class="checkbox-item"><input type="checkbox"> Vision insurance</label>
+        <label class="checkbox-item"><input type="checkbox"> Flexible schedule</label>
+        <label class="checkbox-item"><input type="checkbox"> 401(k)</label>
+        <label class="checkbox-item"><input type="checkbox"> Paid time off</label>
+        <label class="checkbox-item"><input type="checkbox"> Parental leave</label>
+        <label class="checkbox-item"><input type="checkbox"> On-the-job training</label>
+        <label class="checkbox-item"><input type="checkbox"> Referral program</label>
+        <label class="checkbox-item"><input type="checkbox"> Professional development</label>
+        <label class="checkbox-item"><input type="checkbox"> Other</label>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Applicant update email address</label>
+        <input type="email" placeholder="hr@chemtex.com">
+      </div>
+      <div class="field">
+        <label>Desired hiring timeline</label>
+        <input type="text" placeholder="e.g. Within 60 days">
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Send individual update per applicant?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="indiv-update" value="yes"> Yes</label>
+          <label><input type="radio" name="indiv-update" value="no"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Allow candidates to contact hiring manager?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="contact-mgr" value="yes"> Yes</label>
+          <label><input type="radio" name="contact-mgr" value="no"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>Require resume submission?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="resume" value="yes"> Yes</label>
+          <label><input type="radio" name="resume" value="no"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Background check required?</label>
+        <div class="radio-group" style="margin-top:8px">
+          <label><input type="radio" name="bg-check" value="yes"> Yes</label>
+          <label><input type="radio" name="bg-check" value="no"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="max-width:50%">
+      <label>How long should the position be posted?</label>
+      <input type="text" placeholder="e.g. 30 days">
+    </div>
+
+    <div class="field">
+      <label>Additional information for the job posting</label>
+      <textarea placeholder="Any other details leadership or HR should know."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Attachments</label>
+      <div class="hint">Attach the current or proposed job description, along with any supporting data to justify the requisition request and any other documents leadership should review.</div>
+      <input type="file" multiple>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <div class="section-title">Section 5 — Approval routing</div>
+    <div class="hint" style="margin-bottom:1rem">Add each person who needs to review this requisition, in the order they should approve it. Use the panel below to send it back to the employee for more information, or approve it, at any step.</div>
+    <div id="approversList"></div>
+    <button class="btn btn-outline btn-sm" type="button" onclick="addApprover()">+ Add approver</button>
+  </div>
+
+  <!-- Approver decision panel -->
+  <div class="approver-panel">
+    <div class="section-title">Approver decision</div>
+    <div class="two-col">
+      <div class="field">
+        <label>Acting approver</label>
+        <input type="text" id="actingApprover" placeholder="Name of the approver taking action">
+      </div>
+      <div class="field">
+        <label>Comments</label>
+        <input type="text" id="decisionComment" placeholder="Notes or questions (required to send back)">
+      </div>
+    </div>
+    <div class="approver-actions">
+      <button class="btn btn-deny" type="button" onclick="denyRequisition()">✕ Deny</button>
+      <button class="btn btn-outline btn-danger" type="button" onclick="sendBackToEmployee()">↩ Send back to employee</button>
+      <button class="btn btn-success" type="button" onclick="approveRequisition()">✓ Approve</button>
+    </div>
+    <div class="hint" style="margin-top:.75rem">These actions open an email draft to notify the relevant recipient(s) in your default mail app — review and send it from there.</div>
+  </div>
+
+  <div class="hint" style="margin-bottom:.5rem">Submitting for approval opens an email draft to your approver(s) in your default mail app.</div>
+  <div class="submit-row">
+    <button class="btn btn-outline" type="button" onclick="saveProgress(false)">Save</button>
+    <button class="btn btn-outline" type="button" onclick="saveProgress(true)">Save as draft</button>
+    <button class="btn btn-primary" type="button" onclick="submitForApproval()">Submit for approval</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  UTILITIES
+// ════════════════════════════════════════════
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return esc(s).replace(/"/g,'&quot;');}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.display='block';
+  clearTimeout(t._h);
+  t._h=setTimeout(()=>{t.style.display='none';},3200);
+}
+function genId(){return 'REQ-'+Math.random().toString(36).slice(2,8).toUpperCase();}
+
+// ════════════════════════════════════════════
+//  EMAIL NOTIFICATIONS (mailto — opens a draft in
+//  the user's own mail app; nothing is sent
+//  automatically, they still hit Send themselves)
+// ════════════════════════════════════════════
+function buildMailto(toList, subject, body){
+  const to=toList.filter(Boolean).join(',');
+  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function openEmail(toList, subject, body){
+  const valid=(toList||[]).filter(Boolean);
+  if(!valid.length){ toast('⚠ No email address on file for that recipient — notification not sent.'); return; }
+  const a=document.createElement('a');
+  a.href=buildMailto(valid, subject, body);
+  a.click();
+}
+function reqSummaryLine(){
+  const title=(document.getElementById('reqTitle')||{}).value||'(untitled position)';
+  const dept=(document.getElementById('reqDept')||{}).value||'(no department)';
+  const mgr=(document.getElementById('reqManager')||{}).value||'(no requester)';
+  return `Position: ${title}\nDepartment: ${dept}\nRequesting manager: ${mgr}\nRequisition ID: ${REQ_ID}`;
+}
+function getRequesterEmail(){ return (document.getElementById('reqEmail')||{}).value||''; }
+
+// ════════════════════════════════════════════
+//  CONDITIONAL FIELD TOGGLES (existing behavior)
+// ════════════════════════════════════════════
+function toggle(selectId, triggerVal, targetId) {
+  var sel = document.getElementById(selectId);
+  var el = document.getElementById(targetId);
+  if (sel && el) el.classList.toggle('visible', sel.value === triggerVal);
+}
+function showIf(radioName, triggerVal, targetId) {
+  var radios = document.querySelectorAll('input[name="' + radioName + '"]');
+  var el = document.getElementById(targetId);
+  if (!el) return;
+  var selected = '';
+  radios.forEach(function(r) { if (r.checked) selected = r.value; });
+  el.classList.toggle('visible', selected === triggerVal);
+}
+function reapplyConditionals(){
+  toggle('pos-type','replacement','is-replacement');
+  showIf('curr-emp','yes','curr-emp-detail');
+  showIf('coverage','yes','coverage-detail');
+  showIf('budgeted','no','budget-detail');
+  showIf('noncomp','yes','noncomp-detail');
+  showIf('travel','yes','travel-detail');
+  showIf('supervise','yes','supervise-detail');
+}
+
+// ════════════════════════════════════════════
+//  FIELD KEYS — auto-assign a stable key to every
+//  field so the whole form can be saved/restored
+//  without hand-tagging every input.
+// ════════════════════════════════════════════
+function assignFieldKeys(){
+  document.querySelectorAll('.page input, .page select, .page textarea').forEach((el,i)=>{
+    if(el.type==='radio' || el.type==='file') return; // radios keyed by name; files aren't persisted
+    if(!el.dataset.field) el.dataset.field='f_'+i;
+  });
+}
+function collectFormData(){
+  const data={};
+  document.querySelectorAll('.page input, .page select, .page textarea').forEach(el=>{
+    if(el.type==='file') return;
+    if(el.type==='radio'){ if(el.checked) data[el.name]=el.value; }
+    else if(el.type==='checkbox'){ data[el.dataset.field]=el.checked; }
+    else { data[el.dataset.field]=el.value; }
+  });
+  return data;
+}
+function applyFormData(data){
+  if(!data) return;
+  document.querySelectorAll('.page input, .page select, .page textarea').forEach(el=>{
+    if(el.type==='file') return;
+    if(el.type==='radio'){ el.checked = (data[el.name]===el.value); }
+    else if(el.type==='checkbox'){ if(data[el.dataset.field]!==undefined) el.checked=data[el.dataset.field]; }
+    else { if(data[el.dataset.field]!==undefined) el.value=data[el.dataset.field]; }
+  });
+  reapplyConditionals();
+}
+
+// ════════════════════════════════════════════
+//  APPROVERS (multiple, sequential)
+// ════════════════════════════════════════════
+let APPROVERS=[{name:'',title:'',email:'',status:'Pending'}];
+function statusClass(s){
+  if(s==='Approved') return 'status-approved';
+  if(s==='Sent Back') return 'status-sentback';
+  return 'status-draft';
+}
+function approverRowHTML(a,idx){
+  return `<div class="approver-row" data-idx="${idx}">
+    <div class="approver-order">${idx+1}</div>
+    <div class="approver-fields">
+      <input type="text" placeholder="Approver name" value="${escAttr(a.name)}" oninput="updateApprover(${idx},'name',this.value)">
+      <input type="text" placeholder="Title / role" value="${escAttr(a.title)}" oninput="updateApprover(${idx},'title',this.value)">
+      <input type="email" placeholder="Email address" value="${escAttr(a.email)}" oninput="updateApprover(${idx},'email',this.value)">
+    </div>
+    <span class="approver-status ${statusClass(a.status)}">${esc(a.status)}</span>
+    <button class="approver-remove" type="button" title="Remove approver" onclick="removeApprover(${idx})">✕</button>
+  </div>`;
+}
+function renderApprovers(){
+  document.getElementById('approversList').innerHTML=APPROVERS.map(approverRowHTML).join('');
+}
+function addApprover(){
+  APPROVERS.push({name:'',title:'',email:'',status:'Pending'});
+  renderApprovers();
+}
+function removeApprover(i){
+  if(APPROVERS.length<=1){ toast('At least one approver is required.'); return; }
+  APPROVERS.splice(i,1);
+  renderApprovers();
+}
+function updateApprover(i,key,val){ APPROVERS[i][key]=val; }
+
+// ════════════════════════════════════════════
+//  STATUS + ACTIVITY LOG
+// ════════════════════════════════════════════
+let STATUS='Draft';
+let HISTORY=[];
+let REQ_ID=null;
+
+function statusPillClass(s){
+  if(s==='Pending Approval') return 'status-pending';
+  if(s==='Sent Back to Employee') return 'status-sentback';
+  if(s==='Denied') return 'status-denied';
+  if(s==='Approved') return 'status-approved';
+  return 'status-draft';
+}
+function setStatus(s){
+  STATUS=s;
+  const pill=document.getElementById('statusPill');
+  pill.textContent=s;
+  pill.className='status-pill '+statusPillClass(s);
+}
+function logActivity(text){
+  HISTORY.unshift({text, ts:new Date().toLocaleString()});
+  renderActivity();
+}
+function renderActivity(){
+  const wrap=document.getElementById('activityLog');
+  const list=document.getElementById('activityList');
+  if(!HISTORY.length){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  list.innerHTML=HISTORY.map(h=>`<li><span class="activity-ts">${esc(h.ts)}</span>${esc(h.text)}</li>`).join('');
+}
+
+// ════════════════════════════════════════════
+//  SAVE / LOAD
+//  Uses the artifact's built-in storage (shared,
+//  so an approver opening this same form can pull
+//  up the same requisition by ID). Falls back to
+//  an in-memory/session-only save if storage isn't
+//  available (e.g. the file opened outside Claude).
+// ════════════════════════════════════════════
+async function persistState(){
+  const data=collectFormData();
+  data.approvers=APPROVERS;
+  data.status=STATUS;
+  data.history=HISTORY;
+  if(window.storage){
+    try{
+      await window.storage.set('requisition:'+REQ_ID, JSON.stringify(data), true);
+      return true;
+    }catch(e){ console.error(e); return false; }
+  }
+  return false;
+}
+async function fetchState(id){
+  if(!window.storage) return null;
+  try{
+    const res=await window.storage.get('requisition:'+id, true);
+    return res ? JSON.parse(res.value) : null;
+  }catch(e){ return null; }
+}
+
+async function saveProgress(asDraft){
+  if(!REQ_ID){ REQ_ID=genId(); document.getElementById('reqIdDisplay').textContent=REQ_ID; }
+  if(asDraft) setStatus('Draft');
+  const saved=await persistState();
+  logActivity(asDraft?'Saved as draft':'Progress saved');
+  toast(saved ? `✅ Saved. Requisition ID: ${REQ_ID}` : '💾 Saved for this session. (Cloud save needs this form open in Claude.)');
+}
+
+async function submitForApproval(){
+  if(!APPROVERS.some(a=>a.name.trim()) && !confirm('No approvers have been added yet. Submit anyway?')) return;
+  if(!REQ_ID){ REQ_ID=genId(); document.getElementById('reqIdDisplay').textContent=REQ_ID; }
+  APPROVERS.forEach(a=>{ if(a.status==='Sent Back') a.status='Pending'; });
+  renderApprovers();
+  setStatus('Pending Approval');
+  await persistState();
+  logActivity('Submitted for approval');
+  const approverEmails=APPROVERS.map(a=>a.email.trim());
+  openEmail(approverEmails,
+    `Headcount requisition for your review — ${REQ_ID}`,
+    `A headcount requisition needs your review.\n\n${reqSummaryLine()}\n\nOpen this form and enter the Requisition ID above to review the full details.`);
+  toast(`✅ Submitted for approval. Requisition ID: ${REQ_ID}`);
+}
+
+async function sendBackToEmployee(){
+  const approver=document.getElementById('actingApprover').value.trim();
+  const comment=document.getElementById('decisionComment').value.trim();
+  if(!approver){ alert('Please enter the acting approver\'s name.'); return; }
+  if(!comment){ alert('Please add a comment so the employee knows what information is needed.'); return; }
+  const idx=APPROVERS.findIndex(a=>a.name.trim().toLowerCase()===approver.toLowerCase());
+  if(idx>-1){ APPROVERS[idx].status='Sent Back'; renderApprovers(); }
+  setStatus('Sent Back to Employee');
+  await persistState();
+  logActivity(`Sent back by ${approver}: "${comment}"`);
+  openEmail([getRequesterEmail()],
+    `More information needed — requisition ${REQ_ID}`,
+    `Your headcount requisition has been sent back for more information.\n\n${reqSummaryLine()}\n\nSent back by: ${approver}\nComment: ${comment}\n\nPlease update the form and resubmit for approval.`);
+  document.getElementById('decisionComment').value='';
+  toast('↩ Sent back to the employee for more information.');
+}
+
+async function approveRequisition(){
+  const approver=document.getElementById('actingApprover').value.trim();
+  if(!approver){ alert('Please enter the acting approver\'s name.'); return; }
+  const comment=document.getElementById('decisionComment').value.trim();
+  let idx=APPROVERS.findIndex(a=>a.name.trim().toLowerCase()===approver.toLowerCase() && a.status!=='Approved');
+  if(idx===-1) idx=APPROVERS.findIndex(a=>a.status!=='Approved');
+  if(idx>-1) APPROVERS[idx].status='Approved';
+  renderApprovers();
+  const allApproved=APPROVERS.length>0 && APPROVERS.every(a=>a.status==='Approved');
+  setStatus(allApproved?'Approved':'Pending Approval');
+  await persistState();
+  logActivity(`Approved by ${approver}${comment?': "'+comment+'"':''}`);
+  if(allApproved){
+    openEmail([getRequesterEmail()],
+      `Requisition approved — ${REQ_ID}`,
+      `Good news — your headcount requisition has been fully approved.\n\n${reqSummaryLine()}\n\nFinal approval by: ${approver}${comment?`\nComment: ${comment}`:''}`);
+  } else {
+    const next=APPROVERS.find(a=>a.status!=='Approved');
+    openEmail([next?next.email.trim():''],
+      `Requisition approved by ${approver} — your review needed (${REQ_ID})`,
+      `${approver} has approved this headcount requisition. It's now ready for your review.\n\n${reqSummaryLine()}\n\nOpen this form and enter the Requisition ID above to review the full details.`);
+  }
+  document.getElementById('decisionComment').value='';
+  toast(allApproved ? '🎉 Requisition fully approved.' : '✅ Approval recorded. Awaiting remaining approver(s).');
+}
+
+async function denyRequisition(){
+  const approver=document.getElementById('actingApprover').value.trim();
+  const comment=document.getElementById('decisionComment').value.trim();
+  if(!approver){ alert('Please enter the acting approver\'s name.'); return; }
+  if(!comment){ alert('Please add a comment explaining the reason for denial.'); return; }
+  if(!confirm('Deny this requisition? This ends the approval workflow.')) return;
+  setStatus('Denied');
+  await persistState();
+  logActivity(`Denied by ${approver}: "${comment}"`);
+  openEmail([getRequesterEmail()],
+    `Requisition denied — ${REQ_ID}`,
+    `Your headcount requisition has been denied.\n\n${reqSummaryLine()}\n\nDenied by: ${approver}\nReason: ${comment}`);
+  document.getElementById('decisionComment').value='';
+  toast('✕ Requisition denied.');
+}
+
+async function loadRequisition(){
+  const id=document.getElementById('loadReqId').value.trim().toUpperCase();
+  if(!id){ toast('Enter a requisition ID to open.'); return; }
+  if(!window.storage){ toast('Opening a saved requisition needs this form open in Claude.'); return; }
+  const data=await fetchState(id);
+  if(!data){ toast('No saved requisition found for that ID.'); return; }
+  if(!confirm(`Open requisition ${id}? This will replace the current form contents.`)) return;
+  REQ_ID=id;
+  document.getElementById('reqIdDisplay').textContent=REQ_ID;
+  applyFormData(data);
+  APPROVERS=(data.approvers&&data.approvers.length)?data.approvers:[{name:'',title:'',email:'',status:'Pending'}];
+  renderApprovers();
+  HISTORY=data.history||[];
+  renderActivity();
+  setStatus(data.status||'Draft');
+  toast('✅ Opened requisition '+id);
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+  assignFieldKeys();
+  renderApprovers();
+  setStatus('Draft');
+  REQ_ID=genId();
+  document.getElementById('reqIdDisplay').textContent=REQ_ID;
+  const urlId=new URLSearchParams(window.location.search).get('req');
+  if(urlId){
+    document.getElementById('loadReqId').value=urlId;
+    loadRequisition();
+  }
+});
+</script>
+</body>
+</html>
